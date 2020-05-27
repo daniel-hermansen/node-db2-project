@@ -15,15 +15,19 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  const { id } = req.params;
+const { id } = req.params;
 
-  db('cars').where({ id }).first()
-    .then(car => {
-      res.json(car);
-    })
-    .catch(err => {
-      res.status(500).json({ message: 'Failed to retrieve car' });
-    });
+    db('cars').where({ id }).first()
+        .then(car => {
+            if (!car){
+                return res.status(404).json({message: 'No car found with that ID'})
+            } else {
+                res.status(200).json(car);
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to retrieve car' });
+        });
 });
 
 router.post('/', (req, res) => {
